@@ -1,9 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import reactLogo from "./assets/react.svg";
+import "./App.css";
+import { useAppSelector } from "./hooks/redux";
+import { useTriggerMultipleActions } from "./hooks/use-trigger-multiple-actions";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const counter = useAppSelector((store) => store.counter);
+  const { isProcessing, trigger } = useTriggerMultipleActions();
+
+  if (isProcessing === "done") {
+    if (counter.value !== 13) throw new Error("Counter should be 13");
+    console.log("counter value is 13", counter);
+  }
 
   return (
     <div className="App">
@@ -17,9 +24,11 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <button onClick={trigger}>Start multiple actions</button>
+        <div>count is {counter.value}</div>
+        <div>
+          {isProcessing === "processing" && "Processing Multiple actions"}
+        </div>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
@@ -28,7 +37,7 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
